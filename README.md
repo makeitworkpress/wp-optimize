@@ -10,20 +10,20 @@ A true value will execute the given optimisation.
 
 Currently, the class defaults to the following optimisations:
 
-$optimisations = array(
-            'no_scripts_styles_version' => true,
-            'no_wp_version'             => true,
-            'no_feed'                   => false,
-            'no_shortlinks'             => true,
-            'no_rsd_manifest'           => true,
-            'no_wp_emoji'               => true,
-            'disable_xmlrpc'            => true,
-            'block_external_http'       => true,
-            'stop_heartbeat'            => false,
-            'disable_comments'          => false,
-            'no_jquery'                 => false,
-            'no_embed'                  => false  
-);
+            $optimisations = array(
+                        'no_scripts_styles_version' => true,
+                        'no_wp_version'             => true,
+                        'no_feed'                   => false,
+                        'no_shortlinks'             => true,
+                        'no_rsd_manifest'           => true,
+                        'no_wp_emoji'               => true,
+                        'disable_xmlrpc'            => true,
+                        'block_external_http'       => true,
+                        'stop_heartbeat'            => false,
+                        'disable_comments'          => false,
+                        'no_jquery'                 => false,
+                        'no_embed'                  => false  
+            );
 
 ### Create instance
 Create a new instance of the WP_Optimize class with your optimisations array as arguments.
