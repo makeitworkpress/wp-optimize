@@ -28,4 +28,4 @@ Currently, the class defaults to the following optimisations:
 ### Create instance
 Create a new instance of the WP_Optimize class with your optimisations array as arguments.
 
-$optimize = new MT_WP_Optimize($optimisations);
+            $optimize = new MT_WP_Optimize($optimisations);
