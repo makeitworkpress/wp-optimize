@@ -43,7 +43,7 @@ class MT_WP_Optimize {
      */
     private function optimize() {
 
-        foreach($this->optimize as $key => $value) {
+        foreach($this->optimize as $key => $value && method_exists($this, $key)) {
             if($value === true) {
                 $this->$key();
             }
