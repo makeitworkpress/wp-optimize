@@ -28,7 +28,7 @@ class MT_WP_Optimize {
             'no_rsd_manifest'           => true,
             'no_wp_emoji'               => true,
             'disable_xmlrpc'            => true,
-            'block_external_http'       => true,
+            'block_external_http'       => false,
             'stop_heartbeat'            => false,
             'disable_comments'          => false,
             'no_jquery'                 => false,
@@ -203,7 +203,9 @@ class MT_WP_Optimize {
      * Block plugins to connect to external http's
      */  
     private function block_external_http() {
-        add_filter( 'pre_http_request', '__return_true', 100 );
+        if( ! is_admin() ) {
+            add_filter( 'pre_http_request', '__return_true', 100 );
+        }
     }
     
     /**
