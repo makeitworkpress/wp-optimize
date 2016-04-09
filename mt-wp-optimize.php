@@ -3,6 +3,7 @@
  * Class wrapper for removing unnecessary WordPress functions
  *
  * @author Michiel Tramper - https://michieltramper.com
+ * @todo Implement hooked functions as anonymous - PHP5.3+
  */
 defined( 'ABSPATH' ) or die( 'Go eat veggies!' );
 
@@ -18,7 +19,7 @@ class MT_WP_Optimize {
      *
      * @param array $optimize The optimalizations to conduct
      */
-    public function __construct($optimisations = array()) {
+    public function __construct(Array $optimizations = array()) {
         $defaults =  array(
             'no_scripts_styles_version' => true,
             'no_wp_version'             => true,
@@ -31,10 +32,10 @@ class MT_WP_Optimize {
             'stop_heartbeat'            => false,
             'disable_comments'          => false,
             'no_jquery'                 => false,
-            'no_embed'                 => false
+            'no_embed'                  => false
         );
         
-        $this->optimize = wp_parse_args($optimisations, $defaults);
+        $this->optimize = wp_parse_args($optimizations, $defaults);
         $this->optimize();
     }
     
@@ -43,8 +44,8 @@ class MT_WP_Optimize {
      */
     private function optimize() {
 
-        foreach($this->optimize as $key => $value && method_exists($this, $key)) {
-            if($value === true) {
+        foreach($this->optimize as $key => $value) {
+            if($value === true && method_exists($this, $key) ) {
                 $this->$key();
             }
         }
@@ -84,6 +85,8 @@ class MT_WP_Optimize {
        
     /**
      * Removes links to RSS feeds
+     * 
+     * @uses MT_WP_Optimize::no_feed_hook
      */
     private function no_feed() {        
         remove_action( 'wp_head', 'feed_links_extra', 3 ); 
@@ -119,6 +122,8 @@ class MT_WP_Optimize {
             
     /**
      * Removes WP Emoji
+     * 
+     * @uses MT_WP_Optimize::remove_tinymce_emoji
      */
     private function no_wp_emoji() {
         remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
@@ -145,6 +150,9 @@ class MT_WP_Optimize {
     
     /**
      * Disables XML RPC. Warning, makes some functions unavailable!
+     *
+     * @uses MT_WP_Optimize::unset_xmlrpc_headers
+     * @uses MT_WP_Optimize::unset_pingback_methods
      */
     private function disable_xmlrpc() {
                  
@@ -200,6 +208,11 @@ class MT_WP_Optimize {
     
     /**
      * Removes the support and appearance of comments
+     *
+     * @uses MT_WP_Optimize::remove_comments_post_type
+     * @uses MT_WP_Optimize::remove_comments_page
+     * @uses MT_WP_Optimize::remove_comments_menu
+     * @uses MT_WP_Optimize::return_false
      */  
     private function disable_comments() {
         
@@ -256,6 +269,8 @@ class MT_WP_Optimize {
 
     /**
      * Deregisters jQuery.
+     *
+     * @uses MT_WP_Optimize::no_jquery_hook
      */    
     public function no_jquery() {
         add_action( 'wp_enqueue_scripts', array($this, 'no_jquery_hook'));
@@ -270,13 +285,15 @@ class MT_WP_Optimize {
     
     /**
      * Removes the Embed Javascript
+     *
+     * @uses MT_WP_Optimize::no_embed_hook         
      */    
     public function no_embed() {
         add_action( 'init', array($this, 'no_embed_hook'));
     }    
     
     /**
-     * Deregisters jQuery Hook
+     * Hooks for removing the Embed Functionality 
      */
     public function no_embed_hook() {
         
