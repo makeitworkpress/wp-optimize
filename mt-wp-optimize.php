@@ -204,9 +204,16 @@ class MT_WP_Optimize {
      */  
     private function block_external_http() {
         if( ! is_admin() ) {
-            add_filter( 'pre_http_request', '__return_true', 100 );
+            add_filter( 'pre_http_request', array($this, 'external_http_error'), 100 );
         }
     }
+    
+    /**
+     *  Throws a new WordPress Error when a service has an external request
+     */
+    public function external_http_error() {
+	   return new WP_Error('http_request_failed', __('Request blocked by WP Optimize.'));
+    }    
     
     /**
      * Removes the support and appearance of comments
