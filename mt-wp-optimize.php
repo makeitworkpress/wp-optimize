@@ -3,6 +3,7 @@
  * Class wrapper for removing unnecessary WordPress functions
  *
  * @author Michiel Tramper - https://michieltramper.com
+ * @todo Extend better support for css deferring based upon dependencies and conditionals
  */
 defined( 'ABSPATH' ) or die( 'Go eat veggies!' );
 

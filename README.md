@@ -22,7 +22,9 @@ Currently, the class defaults to the following optimisations:
                         'stop_heartbeat'            => false,
                         'disable_comments'          => false,
                         'no_jquery'                 => false,
-                        'no_embed'                  => false  
+                        'no_embed'                  => false,  
+                        'defer_js'                  => false,  
+                        'defer_css'                 => false  
             );
 
 ### Create instance
