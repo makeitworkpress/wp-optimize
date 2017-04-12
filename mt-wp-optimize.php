@@ -218,9 +218,6 @@ class MT_WP_Optimize {
         // Remove the REST API lines from the HTML Header
         remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
 
-        // Remove all embeds rewrite rules.
-        add_filter( 'rewrite_rules_array', 'disable_embeds_rewrites' ); 
-
         // Filters for WP-API version 2.x
         add_filter('rest_enabled', '__return_false');
         add_filter('rest_jsonp_enabled', '__return_false');        
