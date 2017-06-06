@@ -4,12 +4,12 @@
  *
  * @author Michiel Tramper - https://www.michieltramper.com & https://www.makeitworkpress.com
  */
-namespace Classes\WP_Optimize;
+namespace WP_Optimize;
 use WP_Error as WP_Error;
 
 defined( 'ABSPATH' ) or die( 'Go eat veggies!' );
 
-class MT_WP_Optimize {
+class Optimize {
         
     /**
      * Holds the configurations for the optimizations
@@ -25,8 +25,8 @@ class MT_WP_Optimize {
         $defaults =  array(
             'blockExternalHTTP'         => false,
             'deferCSS'                  => false, 
-            'disableEmbed'              => false,
             'deferJS'                   => false,
+            'disableEmbed'              => false,
             'disableComments'           => false,
             'disableRestApi'            => false,
             'disableXMLRPC'             => true,
