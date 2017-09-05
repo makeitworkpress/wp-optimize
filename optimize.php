@@ -24,8 +24,6 @@ class Optimize {
     public function __construct(Array $optimizations = array()) {
         $defaults =  array(
             'blockExternalHTTP'         => false,
-            'deferCSS'                  => false, 
-            'deferJS'                   => false,
             'disableEmbed'              => false,
             'disableComments'           => false,
             'disableRestApi'            => false,
@@ -69,78 +67,6 @@ class Optimize {
                 return new WP_Error('http_request_failed', __('Request blocked by WP Optimize.'));    
             }, 100 );
         }
-    }
-    
-    /**
-     * Defers all CSS using loadCSS from the Filament Group. Thanks dudes and dudettes!
-     */
-    private function deferCSS() {
-        
-        // Rewrite our object context
-        $object = $this;
-        
-        // Dequeue our CSS and save our styles. Please note - this function removes conditional styles for older browsers
-        add_action( 'wp_enqueue_scripts', function() use( $object ) {
-            
-            global $wp_styles;
-
-            // Save the queued styles
-            foreach( $wp_styles->queue as $style ) {    
-                $object->styles[]   = $wp_styles->registered[$style];  
-                $dependencies       = $wp_styles->registered[$style]->deps;
-
-                if( ! $dependencies)
-                    continue;
-
-                // Add dependencies, but only if they are not included yet
-                foreach( $dependencies as $dependency ) { 
-                    $object->styles[] = $wp_styles->registered[$dependency];
-                }                
-
-            }
-            
-            // Remove duplicate values because of the dependencies
-            $object->styles = array_unique( $object->styles, SORT_REGULAR );
-
-            // Dequeue styles and their dependencies except for conditionals
-            foreach( $object->styles as $style ) {
-                wp_dequeue_style($style->handle);
-            }            
-            
-        }, 9999);        
-        
-        // Load our CSS using loadCSS
-        add_action( 'wp_head', function() use( $object ) {
-         
-            $output = '<script>function loadCSS(a,b,c,d){"use strict";var e=window.document.createElement("link"),f=b||window.document.getElementsByTagName("script")[0],g=window.document.styleSheets;return e.rel="stylesheet",e.href=a,e.media="only x",d&&(e.onload=d),f.parentNode.insertBefore(e,f),e.onloadcssdefined=function(b){for(var c,d=0;d<g.length;d++)g[d].href&&g[d].href.indexOf(a)>-1&&(c=!0);c?b():setTimeout(function(){e.onloadcssdefined(b)})},e.onloadcssdefined(function(){e.media=c||"all"}),e}';
-
-            foreach( $object->styles as $style ) { 
-
-                if( isset($style->extra['conditional'] ) ) 
-                    continue;
-                
-                // Load local assets
-                if( strpos($style->src, 'http') === false )    
-                    $style->src = site_url() . $style->src;
-
-                $output .= 'loadCSS("' . $style->src . '", "", "' . $style->args . '");';           
-            }
-
-            $output .= '</script>';
-            
-            echo $output;
-            
-        }, 9999);
-        
-    }    
-    
-    /**
-     * Defers all JS
-     */
-    private function deferJS() {
-        add_filter( 'script_loader_tag', function( $tag ) {
-            return str_replace( ' src', ' defer="defer" src', $tag );    
-        }, 10, 1 );    
     }
     
     /**
