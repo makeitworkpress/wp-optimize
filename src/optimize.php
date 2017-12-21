@@ -4,7 +4,7 @@
  *
  * @author Michiel Tramper, https://www.makeitworkpress.com
  */
-namespace WP_Optimize;
+namespace MakeitWorkPress\WP_Optimize;
 use WP_Error as WP_Error;
 
 defined( 'ABSPATH' ) or die( 'Go eat veggies!' );
@@ -143,6 +143,12 @@ class Optimize {
      * Defers all JS
      */
     private function deferJS() {
+
+        // Defered JS breaks the customizer, hence we skip it here
+        if( is_customize_preview() ) {
+            return; 
+        }
+
         add_filter( 'script_loader_tag', function( $tag ) {
             return str_replace( ' src', ' defer="defer" src', $tag );    
         }, 10, 1 );    

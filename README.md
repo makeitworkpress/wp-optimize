@@ -39,4 +39,4 @@ Currently, the class defaults to the following optimisations:
 ### Create instance
 Create a new instance of the WP_Optimize class with your optimisations array as arguments.
 
-            $optimize = new WP_Optimize\Optimize($optimisations);
+            $optimize = new MakeitWorkPress\WP_Optimize\Optimize($optimisations);

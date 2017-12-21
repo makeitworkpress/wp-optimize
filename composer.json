@@ -1,3 +1,22 @@
 {
-    "name": "wp-optimize"
+    "name": "makeitworkpress/wp-optimize",
+    "description": "This class stores some common optimizations which can help clean up your WordPress theme.",
+    "license": "GPL",
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "MakeitWorkPress\\WP_Optimize\\": "src"
+        }
+    },
+    "homepage": "https://github.com/makeitworkpress/wp-optimize",
+    "authors": [ 
+        {
+            "name": "Michiel Tramper",
+            "email": "michiel@makeitworkpress.com",
+            "homepage": "https://www.makeitworkpress.com"
+
+        } 
+    ]           
 }
