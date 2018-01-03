@@ -437,8 +437,7 @@ class Optimize {
         
         add_action('wp_print_scripts', function() {
             if(is_singular() && (get_option('thread_comments') == 1) && comments_open() && get_comments_number() ) {
-                wp_enqueue_script('comment-reply');
-               
+                wp_enqueue_script('comment-reply');     
             } else {
                 wp_dequeue_script('comment-reply');
             }           
