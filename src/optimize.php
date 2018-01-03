@@ -436,8 +436,9 @@ class Optimize {
     private function limitCommentsJS() {
         
         add_action('wp_print_scripts', function() {
-            if (is_singular() && (get_option('thread_comments') == 1) && comments_open() && have_comments()) {
+            if(is_singular() && (get_option('thread_comments') == 1) && comments_open() && get_comments_number() ) {
                 wp_enqueue_script('comment-reply');
+               
             } else {
                 wp_dequeue_script('comment-reply');
             }           
