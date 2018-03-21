@@ -1,6 +1,8 @@
 # wp-optimize
 The WP Optimize class provides a wrapper to optimize WordPress and remove unnecessary or unwanted functions and scripts.
 
+WP Optimize is maintained by [Make it WorkPress](https://www.makeitworkpress.com/wordpress-solutions/scripts/wp-optimize/).
+
 ## Usage
 Include the WP Optimize class in your plugin, theme or child theme file by requiring or autoloading the given file. 
 
