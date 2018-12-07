@@ -145,9 +145,9 @@ class Optimize {
      */
     private function deferJS() {
 
-        // Defered JS breaks the customizer, hence we skip it here
-        if( is_customize_preview() ) {
-            return; 
+        // Defered JS breaks the customizer or the Gutenberg Editor, hence we skip it here
+        if( is_customize_preview() || is_admin() ) {
+            return;
         }
 
         add_filter( 'script_loader_tag', function( $tag ) {
