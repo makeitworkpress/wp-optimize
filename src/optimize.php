@@ -494,21 +494,31 @@ class Optimize {
                 // Search for images
                 $content = preg_replace_callback( '#<(img)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si', function($matches) {
 
-                    return str_replace(
-                        ['class="', 'src=', 'srcset=',  'sizes'], 
-                        ['class="lazy ', 'src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src=',  'data-srcset=', 'data-sizes'],                         
-                        $matches[0]   
-                    );  
+                    // Look if we already have lazy loaded this content
+                    if( strpos($matches[0], 'data-src') == false ) {
+
+                        return str_replace(
+                            ['class="', 'src=', 'srcset=',  'sizes'], 
+                            ['class="lazy ', 'src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src=',  'data-srcset=', 'data-sizes'],                         
+                            $matches[0]   
+                        );  
+
+                    }
 
                 }, $content );
 
                 // Search for iframes
                 $content = preg_replace_callback( '#<(iframe)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si', function($matches) {
 
-                    if( strpos($matches[0], 'class') !== false ) {
-                        return str_replace( ['class="', 'src='], ['class="lazy ', 'data-src='], $matches[0] );  
-                    } else {
-                        return str_replace( ['src='], ['class="lazy" data-src='], $matches[0] );
+                    // Look if we already have lazy loaded this content
+                    if( strpos($matches[0], 'data-src') == false ) {
+
+                        if( strpos($matches[0], 'class') !== false ) {
+                            return str_replace( ['class="', 'src='], ['class="lazy ', 'data-src='], $matches[0] );  
+                        } else {
+                            return str_replace( ['src='], ['class="lazy" data-src='], $matches[0] );
+                        }
+
                     }
 
                 }, $content );                
