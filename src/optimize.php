@@ -505,6 +505,8 @@ class Optimize {
 
                     }
 
+                    return $matches[0];
+
                 }, $content );
 
                 // Search for iframes
@@ -520,6 +522,8 @@ class Optimize {
                         }
 
                     }
+
+                    return $matches[0];
 
                 }, $content );                
 
