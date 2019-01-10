@@ -90,6 +90,11 @@ class Optimize {
         
         // Dequeue our CSS and save our styles. Please note - this function removes conditional styles for older browsers
         add_action( 'wp_enqueue_scripts', function() use( $object ) {
+
+            // Bail out if we are uzing the customizer preview
+            if( is_customize_preview() ) {
+                return;
+            }            
             
             global $wp_styles;
             
@@ -121,6 +126,11 @@ class Optimize {
         
         // Load our CSS using loadCSS
         add_action( 'wp_head', function() use( $object ) {
+
+            // Bail out if we are uzing the customizer preview
+            if( is_customize_preview() ) {
+                return;
+            }            
          
             $output = '<script>function loadCSS(a,b,c,d){"use strict";var e=window.document.createElement("link"),f=b||window.document.getElementsByTagName("script")[0],g=window.document.styleSheets;return e.rel="stylesheet",e.href=a,e.media="only x",d&&(e.onload=d),f.parentNode.insertBefore(e,f),e.onloadcssdefined=function(b){for(var c,d=0;d<g.length;d++)g[d].href&&g[d].href.indexOf(a)>-1&&(c=!0);c?b():setTimeout(function(){e.onloadcssdefined(b)})},e.onloadcssdefined(function(){e.media=c||"all"}),e}';
             foreach( $object->styles as $style ) { 
@@ -444,13 +454,17 @@ class Optimize {
                 
                 // Add new data attributes
                 $attr['data-src']       = $attr['src'];
-                $attr['data-srcset']    = $attr['srcset'];
-                $attr['data-sizes']     = $attr['sizes'];
-
-                // Reset the defaults
                 $attr['src']            = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-                $attr['srcset']         = '';
-                $attr['sizes']          = '';
+                
+                if( isset($attr['srcset']) ) {
+                    $attr['data-srcset']    = $attr['srcset'];
+                    $attr['srcset']         = '';
+                }
+
+                if( isset($attr['sizes']) ) {
+                    $attr['data-sizes']     = $attr['sizes'];
+                    $attr['sizes']          = '';
+                }
 
                 // Add the lazy identifier to the class
                 $attr['class']         .= ' lazy';
@@ -509,10 +523,13 @@ class Optimize {
 
         // Enqueue the script required for lazyloading
         add_action( 'wp_enqueue_scripts', function() {
+
+            // The script handler is also used by WP Components. Hence, if WP Components already has this script included, it will be neglected.
             if( ! wp_script_is('lazyload') ) {    
                 $folder = wp_normalize_path( substr( dirname(__FILE__), strpos(__FILE__, 'wp-content') + strlen('wp-content') ) );
                 wp_enqueue_script( 'lazyload', content_url() . $folder . '/assets/js/vendor/lazyload.min.js', [], false, true );
             }
+
         }, 20);
 
     }
