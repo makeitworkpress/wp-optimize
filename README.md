@@ -31,7 +31,6 @@ Currently, the class defaults to the following optimisations:
                 'disableWPVersion'          => true,  // Removes the WP version from the head section of the site.           
                 'disableXMLRPC'             => true,  // Disables the xmlrpc functionality.
                 'jqueryToFooter'            => true,  // Moves the default jQuery script to the footer.
-                'lazyLoad'                  => false, // Lazyloads features images, avatars if the admin bar is not showing and iframes
                 'limitCommentsJS'           => true,  // Limits the JS for comments only to singular entities
                 'limitRevisions'            => true,  // Limits the number of revisions to 5
                 'removeCommentsStyle'       => true,  // Removes the .recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;} styling in the head section
