@@ -42,7 +42,6 @@ class Optimize {
             'disableWPVersion'          => true,            
             'disableXMLRPC'             => true,
             'jqueryToFooter'            => true,
-            'lazyLoad'                  => false,
             'limitCommentsJS'           => true,
             'limitRevisions'            => true,
             'removeCommentsStyle'       => true,
@@ -439,113 +438,6 @@ class Optimize {
             wp_register_script( 'jquery', includes_url( '/js/jquery/jquery.js' ), false, NULL, true );
             wp_enqueue_script( 'jquery' );           
         } );    
-    } 
-
-    /**
-     * Enables lazyloading for images or videos
-     */
-    private function lazyLoad() {
-
-
-        if( ! is_admin() ) {
-
-            // Replace the featured images source and classes
-            add_filter( 'wp_get_attachment_image_attributes', function($attr) {
-                
-                // Add new data attributes
-                $attr['data-src']       = $attr['src'];
-                $attr['src']            = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-                
-                if( isset($attr['srcset']) ) {
-                    $attr['data-srcset']    = $attr['srcset'];
-                    $attr['srcset']         = '';
-                }
-
-                if( isset($attr['sizes']) ) {
-                    $attr['data-sizes']     = $attr['sizes'];
-                    $attr['sizes']          = '';
-                }
-
-                // Add the lazy identifier to the class
-                $attr['class']         .= ' lazy';
-                
-                return $attr;
-            }, 20, 1 );
-
-            // Replace avatar images
-            add_filter( 'get_avatar', function($avatar) {
-
-                if( ! is_admin_bar_showing() ) {
-                    $avatar = str_replace( 
-                        ["class='", 'src=', 'srcset=',  'sizes'], 
-                        ["class='lazy ", 'src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src=',  'data-srcset=', 'data-sizes'], 
-                        $avatar 
-                    );
-                }
-
-                return $avatar;
-
-            } );
-
-
-            // Search for images within the content and modify images
-            add_filter( 'the_content', function($content) {
-
-                // Search for images
-                $content = preg_replace_callback( '#<(img)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si', function($matches) {
-
-                    // Look if we already have lazy loaded this content
-                    if( strpos($matches[0], 'data-src') == false ) {
-
-                        return str_replace(
-                            ['class="', 'src=', 'srcset=',  'sizes'], 
-                            ['class="lazy ', 'src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src=',  'data-srcset=', 'data-sizes'],                         
-                            $matches[0]   
-                        );  
-
-                    }
-
-                    return $matches[0];
-
-                }, $content );
-
-                // Search for iframes
-                $content = preg_replace_callback( '#<(iframe)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si', function($matches) {
-
-                    // Look if we already have lazy loaded this content
-                    if( strpos($matches[0], 'data-src') == false ) {
-
-                        if( strpos($matches[0], 'class') !== false ) {
-                            return str_replace( ['class="', 'src='], ['class="lazy ', 'data-src='], $matches[0] );  
-                        } else {
-                            return str_replace( ['src='], ['class="lazy" data-src='], $matches[0] );
-                        }
-
-                    }
-
-                    return $matches[0];
-
-                }, $content );                
-
-
-                return $content;
-
-            } );
-
-        }
-
-
-        // Enqueue the script required for lazyloading
-        add_action( 'wp_enqueue_scripts', function() {
-
-            // The script handler is also used by WP Components. Hence, if WP Components already has this script included, it will be neglected.
-            if( ! wp_script_is('lazyload') ) {    
-                $folder = wp_normalize_path( substr( dirname(__FILE__), strpos(__FILE__, 'wp-content') + strlen('wp-content') ) );
-                wp_enqueue_script( 'lazyload', content_url() . $folder . '/assets/js/vendor/lazyload.min.js', [], false, true );
-            }
-
-        }, 20);
-
     }
 
     /**
