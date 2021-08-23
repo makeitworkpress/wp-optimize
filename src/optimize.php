@@ -26,7 +26,7 @@ class Optimize {
         $defaults =  array(
             'block_external_HTTP'       => false,
             'defer_CSS'                 => false,
-            'defer_JS'                  => true,
+            'defer_JS'                  => false,
             'disable_comments'          => false,
             'disable_block_styling'     => false,
             'disable_embed'             => false,
