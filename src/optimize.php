@@ -13,17 +13,20 @@ class Optimize {
         
     /**
      * Holds the configurations for the optimizations
+     * 
+     * @var array
+     * @access private
      */
-    private $optimize = array();
+    private $optimize = [];
             
     /** 
      * Constructor
      *
      * @param array $optimize The optimalizations to conduct
      */
-    public function __construct( Array $optimizations = [] ) {
+    public function __construct( array $optimizations = [] ) {
 
-        $defaults =  array(
+        $defaults =  [
             'block_external_HTTP'       => false,
             'defer_CSS'                 => false,
             'defer_JS'                  => false,
@@ -48,7 +51,7 @@ class Optimize {
             'limit_revisions'           => true,
             'remove_comments_style'     => true,
             'slow_heartbeat'            => true
-        );
+        ];
         
         $this->optimize = wp_parse_args($optimizations, $defaults);
         $this->optimize();
@@ -58,7 +61,7 @@ class Optimize {
     /**
      * Hit it! Runs eachs of the functions if enabled
      */
-    private function optimize() {
+    private function optimize(): void {
         foreach($this->optimize as $key => $value) {
             if( $value === true && method_exists($this, $key) ) {
                 $this->$key();
@@ -69,7 +72,7 @@ class Optimize {
     /**
      * Block plugins to connect to external http's
      */  
-    private function block_external_HTTP() {
+    private function block_external_HTTP(): void {
         if( ! is_admin() ) {
             add_filter( 'pre_http_request', function() {
                 return new WP_Error('http_request_failed', __('Request blocked by WP Optimize.'));    
@@ -80,7 +83,7 @@ class Optimize {
     /**
      * Defers all CSS using loadCSS from the Filament Group. Thanks dudes and dudettes!
      */
-    private function defer_CSS() {
+    private function defer_CSS(): void {
         
         // Rewrite our object context
         $object = $this;
@@ -150,7 +153,7 @@ class Optimize {
     /**
      * Defers all JS
      */
-    private function defer_JS() {
+    private function defer_JS(): void {
 
         // Defered JS breaks the customizer or the Gutenberg Editor, hence we skip it here
         if( is_customize_preview() || is_admin() ) {
@@ -165,7 +168,7 @@ class Optimize {
     /**
      * Disables block styling
      */
-    private function disable_block_styling() {
+    private function disable_block_styling(): void {
         add_action('wp_enqueue_scripts', function() {
             wp_dequeue_style( 'wp-block-library' );
             wp_dequeue_style( 'wp-block-library-theme' );
@@ -176,7 +179,7 @@ class Optimize {
     /**
      * Disables the support and appearance of comments
      */  
-    private function disable_comments() {
+    private function disable_comments(): void {
         
         // by default, comments are closed.
         if( is_admin() ) {
@@ -218,7 +221,7 @@ class Optimize {
     /**
      * Removes the Embed Javascript and References        
      */    
-    private function disable_embed() {
+    private function disable_embed(): void {
 
         add_action( 'wp_enqueue_scripts', function() {
             wp_deregister_script('wp-embed');
@@ -247,8 +250,9 @@ class Optimize {
     
     /**
      * Disables the access to Rest API
+     * Breaks a lot, so not really recommended to use.
      */
-    private function disable_rest_api() {
+    private function disable_rest_api(): void {
         
         // Remove the references to the JSON api
         remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
@@ -272,7 +276,7 @@ class Optimize {
     /**
      * Removes WP Emoji
      */
-    private function disable_emoji() {
+    private function disable_emoji(): void {
         remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
         remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
         remove_action( 'admin_print_styles', 'print_emoji_styles' );
@@ -297,7 +301,7 @@ class Optimize {
     /**
      * Removes links to RSS feeds
      */
-    private function disable_feeds() {        
+    private function disable_feeds(): void {        
         remove_action( 'wp_head', 'feed_links_extra', 3 ); 
         remove_action( 'wp_head', 'feed_links', 2 );   
         add_action( 'do_feed', array($this, 'disable_feeds_hook'), 1 );
@@ -310,14 +314,14 @@ class Optimize {
     /**
      * Removes the actual feed links
      */
-    public function disable_feeds_hook() {
+    public function disable_feeds_hook(): void {
         wp_die( '<p>' . __('Feed disabled by WP Optimize.') . '</p>' );
     }
     
     /**
      * Removes the WP Heartbeat Api. Caution: this disables the autosave functionality 
      */
-    private function disable_heartbeat() {
+    private function disable_heartbeat(): void {
         add_action('admin_enqueue_scripts', function() {
             wp_deregister_script('heartbeat');    
         });
@@ -326,7 +330,7 @@ class Optimize {
     /**
      * Deregisters jQuery.
      */    
-    private function disable_jquery() {
+    private function disable_jquery(): void {
         add_action( 'wp_enqueue_scripts', function() {
             wp_deregister_script('jquery');
         }, 100 );
@@ -335,7 +339,7 @@ class Optimize {
     /**
      * Deregisters jQuery Migrate by removing the dependency.
      */    
-    private function disable_jquery_migrate() {
+    private function disable_jquery_migrate(): void {
 
         add_filter( 'wp_default_scripts', function( $scripts ) {
             if( ! empty($scripts->registered['jquery']) ) {
@@ -348,21 +352,21 @@ class Optimize {
     /**
      * Disables RSD Links, used by pingbacks
      */
-    private function disable_RSD() { 
+    private function disable_RSD(): void { 
         remove_action('wp_head', 'rsd_link'); 
     }     
     
     /**
      * Removes the WP Shortlink 
      */
-    private function disable_shortlinks() { 
+    private function disable_shortlinks(): void { 
         remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );        
     } 
     
     /**
      * Disables the theme and plugin editor
      */
-    private function disable_theme_editor() {
+    private function disable_theme_editor(): void {
         if ( ! defined('DISALLOW_FILE_EDIT') ) {
             define( 'DISALLOW_FILE_EDIT', true );
         }        
@@ -373,7 +377,7 @@ class Optimize {
      *
      * @uses MT_WP_Optimize::no_scripts_styles_version_hook
      */
-    private function disable_version_numbers() {
+    private function disable_version_numbers(): void {
         add_filter( 'style_loader_src', array($this, 'disable_version_numbers_hook'), 9999 );
         add_filter( 'script_loader_src', array($this, 'disable_version_numbers_hook'), 9999 ); 
     }
@@ -383,8 +387,9 @@ class Optimize {
      * The absence of version numbers increases the likelyhood of scripts and styles being cached.
      *
      * @param string @target_url The url of the script
+     * @return string @target_url The modified target url
      */
-    public function disable_version_numbers_hook( $target_url = '' ) {
+    public function disable_version_numbers_hook( string $target_url = '' ): string {
         
         if( strpos( $target_url, 'ver=' ) ) {
             $target_url = remove_query_arg( 'ver', $target_url );
@@ -397,14 +402,14 @@ class Optimize {
     /**
      * Removes WLW manifest bloat
      */
-    private function disable_WLW_manifest() {
+    private function disable_WLW_manifest(): void {
         remove_action('wp_head', 'wlwmanifest_link');   
     }   
        
     /**
      * Removes the WP Version as generated by WP
      */
-    private function disable_WP_version() {
+    private function disable_WP_version(): void {
         remove_action( 'wp_head', 'wp_generator' ); 
         add_filter( 'the_generator', '__return_null' ); 
     }  
@@ -412,7 +417,7 @@ class Optimize {
     /**
      * Disables XML RPC. Warning, makes some functions unavailable!
      */
-    private function disable_XMLRPC() {
+    private function disable_XMLRPC(): void {
         
         if( is_admin() ) {
             update_option( 'default_ping_status', 'closed' ); // Might do something else here to reduce our queries  
@@ -450,7 +455,7 @@ class Optimize {
     /**
      * Puts jquery inside the footer
      */
-    private function jquery_to_footer() {
+    private function jquery_to_footer(): void {
         add_action( 'wp_enqueue_scripts', function() {
             wp_deregister_script( 'jquery' );
             wp_register_script( 'jquery', includes_url( '/js/jquery/jquery.js' ), false, NULL, true );
@@ -461,7 +466,7 @@ class Optimize {
     /**
      * Limits the comment reply JS to the places where it's needed
      */
-    private function limit_comments_JS() {
+    private function limit_comments_JS(): void {
         
         add_action('wp_print_scripts', function() {
             if(is_singular() && (get_option('thread_comments') == 1) && comments_open() && get_comments_number() ) {
@@ -476,7 +481,7 @@ class Optimize {
     /**
      * Limits post revisions
      */
-    private function limit_revisions() {
+    private function limit_revisions(): void {
 
         if( defined('WP_POST_REVISIONS') && (WP_POST_REVISIONS != false) ) {
             add_filter( 'wp_revisions_to_keep', function( $num, $post) {
@@ -489,17 +494,17 @@ class Optimize {
     /**
      * Removes the styling added to the header for recent comments
      */
-    private function remove_comments_style() {    
+    private function remove_comments_style(): void {    
         add_action( 'widgets_init', function() {
             global $wp_widget_factory;
-            remove_action( 'wp_head', array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
+            remove_action( 'wp_head', [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'] );
         });  
     }  
 
     /**
      * Slows heartbeat to 1 minute
      */
-    private function slow_heartbeat() {
+    private function slow_heartbeat(): void {
         
         add_filter( 'heartbeat_settings', function($settings) {
             $settings['interval'] = 60; 
