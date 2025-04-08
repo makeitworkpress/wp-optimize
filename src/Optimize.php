@@ -2,7 +2,7 @@
 /**
  * Class wrapper for removing unnecessary WordPress functions
  *
- * @author Michiel Tramper, https://www.makeitworkpress.com
+ * @author Make it WorkPress, https://www.makeitworkpress.com
  */
 namespace MakeitWorkPress\WP_Optimize;
 use WP_Error as WP_Error;
